@@ -1,6 +1,6 @@
 package idao
 
-import "github.com/flourish-ship/work-account/models"
+import "github.com/flourish-ship/work-account/response"
 
 // IDAO ...
 type IDAO interface {
@@ -9,5 +9,5 @@ type IDAO interface {
 
 // IAccount ...
 type IAccount interface {
-	Login(username, password string) *models.Resp
+	Login(username, password string) *response.Resp
 }
