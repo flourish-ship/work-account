@@ -1,0 +1,3 @@
+package: github.com/flourish-ship/work-account
+import:
+- package: github.com/kataras/iris
