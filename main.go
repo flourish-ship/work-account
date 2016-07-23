@@ -8,7 +8,11 @@ import (
 
 func main() {
 	c := getConf("./config.json")
-	routers.NewAccountManager(daomongo.NewDAOMongo(c), c).Server()
+
+	dao := getDAOMongo(c.DB)
+	defer dao.Session.Close()
+
+	routers.NewAccountManager(dao, c.API).Server()
 }
 
 func getConf(path string) *conf.Config {
@@ -18,4 +22,12 @@ func getConf(path string) *conf.Config {
 		panic(err.Error())
 	}
 	return c
+}
+
+func getDAOMongo(c *conf.DBConfig) *daomongo.DAOMongo {
+	dao, err := daomongo.NewDAOMongo(c)
+	if err != nil {
+		panic(err.Error())
+	}
+	return dao
 }

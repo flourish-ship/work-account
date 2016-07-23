@@ -7,6 +7,13 @@ import (
 
 //Config struct
 type Config struct {
+	API *APIConfig `json:"api"`
+	DB  *DBConfig  `json:"db"`
+}
+
+// APIConfig ...
+type APIConfig struct {
+	Port  string      `json:"port"`
 	Redis RedisConfig `json:"redis"`
 }
 
@@ -15,6 +22,15 @@ type RedisConfig struct {
 	Addr     string `json:"addr"`
 	Password string `json:"password"`
 	Database string `json:"database"`
+}
+
+//DBConfig ...
+type DBConfig struct {
+	DriverName string `json:"driver"`
+	Addr       string `json:"addr"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	Database   string `json:"database"`
 }
 
 //LoadConfig ...

@@ -1,6 +1,9 @@
 package routers
 
-import "github.com/kataras/iris"
+import (
+	"github.com/flourish-ship/work-account/response"
+	"github.com/kataras/iris"
+)
 
 // Login ...
 func (am *AccountManager) Login(c *iris.Context) {
@@ -10,7 +13,8 @@ func (am *AccountManager) Login(c *iris.Context) {
 	}
 	err := c.ReadForm(&param)
 	if err != nil {
-
+		c.JSON(iris.StatusOK, response.RequestParamError.ErrReap())
+		return
 	}
 	c.JSON(iris.StatusOK, am.DAO.Login(param.Username, param.Password))
 }

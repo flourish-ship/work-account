@@ -3,29 +3,36 @@ package routers
 import (
 	"github.com/flourish-ship/work-account/conf"
 	"github.com/flourish-ship/work-account/idao"
+	"github.com/iris-contrib/middleware/logger"
 	"github.com/iris-contrib/sessiondb/redis"
 	"github.com/iris-contrib/sessiondb/redis/service"
 	"github.com/kataras/iris"
 )
 
+const (
+	// PERFIX ...
+	PERFIX = "/am/v1"
+)
+
 // AccountManager ...
 type AccountManager struct {
-	Redis *redis.Database
-	API   *iris.Framework
-	DAO   idao.IDAO
+	config *conf.APIConfig
+	Redis  *redis.Database
+	API    *iris.Framework
+	DAO    idao.IDAO
 }
 
 // NewAccountManager ...
-func NewAccountManager(daoImpl idao.IDAO, c *conf.Config) *AccountManager {
-	//iris.UseSessionDB(db)
+func NewAccountManager(daoImpl idao.IDAO, c *conf.APIConfig) *AccountManager {
 	return &AccountManager{
-		Redis: initReils(c),
-		API:   iris.New(),
-		DAO:   daoImpl,
+		config: c,
+		Redis:  initReils(c),
+		API:    iris.New(),
+		DAO:    daoImpl,
 	}
 }
 
-func initReils(c *conf.Config) *redis.Database {
+func initReils(c *conf.APIConfig) *redis.Database {
 	return redis.New(service.Config{
 		Network:       service.DefaultRedisNetwork,
 		Addr:          c.Redis.Addr,
@@ -46,13 +53,15 @@ func (am *AccountManager) initialize() {
 
 func (am *AccountManager) initRouter() {
 	api := am.API
-	api.Party("/v1/am")
+	api.Use(logger.New(iris.Logger))
+	prefix := api.Party(PERFIX)
 	{
-		api.Post("/login", am.Login)
+		prefix.Post("/login", am.Login)
 	}
 }
 
 // Server ...
 func (am *AccountManager) Server() {
-	am.API.Listen(":3030")
+	am.initialize()
+	am.API.Listen(am.config.Port)
 }
