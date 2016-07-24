@@ -1,12 +1,33 @@
 package routers
 
 import (
+	"fmt"
+
+	"github.com/flourish-ship/work-account/idao"
 	"github.com/flourish-ship/work-account/response"
 	"github.com/kataras/iris"
 )
 
-// Login ...
-func (am *AccountManager) Login(c *iris.Context) {
+// AccountRouter ...
+type AccountRouter struct {
+	R string
+	//Redis  *redis.Database
+	//API    *iris.Framework
+	dao idao.IDAO
+}
+
+// Registe ...
+func (ar *AccountRouter) Registe(am *AccountManager) {
+	ar.dao = am.DAO
+	api := am.API
+	prefix := api.Party(fmt.Sprintf("%s%s", PERFIX, ar.R))
+	{
+		prefix.Post("/signin", ar.SignIn)
+	}
+}
+
+// SignIn ...
+func (ar *AccountRouter) SignIn(c *iris.Context) {
 	var param struct {
 		Username string `form:"username"`
 		Password string `form:"password"`
@@ -16,5 +37,5 @@ func (am *AccountManager) Login(c *iris.Context) {
 		c.JSON(iris.StatusOK, response.RequestParamError.ErrReap())
 		return
 	}
-	c.JSON(iris.StatusOK, am.DAO.Login(param.Username, param.Password))
+	c.JSON(iris.StatusOK, ar.dao.SignIn(param.Username, param.Password))
 }

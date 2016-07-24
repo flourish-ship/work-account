@@ -3,3 +3,5 @@ vendor
 work-account
 config.json
 main
+swagger
+docs.go

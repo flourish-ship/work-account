@@ -22,6 +22,11 @@ type AccountManager struct {
 	DAO    idao.IDAO
 }
 
+// Register ...
+type Register interface {
+	Registe(*AccountManager)
+}
+
 // NewAccountManager ...
 func NewAccountManager(daoImpl idao.IDAO, c *conf.APIConfig) *AccountManager {
 	return &AccountManager{
@@ -48,15 +53,17 @@ func initReils(c *conf.APIConfig) *redis.Database {
 
 func (am *AccountManager) initialize() {
 	am.API.UseSessionDB(am.Redis)
-	am.initRouter()
+	am.API.Use(logger.New(iris.Logger))
+	am.API.StaticWeb("/docs", "./swagger/", 1)
+	am.rigiste(&AccountRouter{R: "/account"})
 }
 
-func (am *AccountManager) initRouter() {
-	api := am.API
-	api.Use(logger.New(iris.Logger))
-	prefix := api.Party(PERFIX)
-	{
-		prefix.Post("/login", am.Login)
+func (am *AccountManager) rigiste(registers ...Register) {
+	if registers == nil || len(registers) == 0 {
+		return
+	}
+	for _, register := range registers {
+		register.Registe(am)
 	}
 }
 

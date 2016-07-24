@@ -9,5 +9,5 @@ type IDAO interface {
 
 // IAccount ...
 type IAccount interface {
-	Login(username, password string) *response.Resp
+	SignIn(username, password string) *response.Resp
 }

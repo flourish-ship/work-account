@@ -1,3 +1,10 @@
+// @APIVersion 1.0.0
+// @APITitle Account management of work attendance
+// @APIDescription It's a part of work attendance project, and development is in-progress.
+// @License Apache Licence Vesion 2.0
+// @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0
+// @BasePath /am/v1/
+// @SubApi Account related(eg. signin,signout) API [/account]
 package main
 
 import (
