@@ -1,7 +1,17 @@
 {
-  "redis": {
-    "addr": "127.0.0.1:6379",
+  "api": {
+    "port": ":3030",
+    "redis": {
+      "addr": "127.0.0.1:6379",
+      "password": "",
+      "database": "am"
+    }
+  },
+  "db": {
+    "driver": "mongodb",
+    "conn_url": "127.0.0.1:6379",
+    "username": "",
     "password": "",
-    "database": "am"
+    "database": "work-attendance"
   }
 }

@@ -1,3 +1,12 @@
 package: github.com/flourish-ship/work-account
 import:
+- package: github.com/iris-contrib/middleware
+  subpackages:
+  - logger
+- package: github.com/iris-contrib/sessiondb
+  subpackages:
+  - redis
+  - redis/service
 - package: github.com/kataras/iris
+- package: gopkg.in/mgo.v2
+- package: golang.org/x/crypto

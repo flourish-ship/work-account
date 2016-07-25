@@ -1,8 +1,6 @@
 package routers
 
 import (
-	"fmt"
-
 	"github.com/flourish-ship/work-account/idao"
 	"github.com/flourish-ship/work-account/response"
 	"github.com/kataras/iris"
@@ -20,7 +18,7 @@ type AccountRouter struct {
 func (ar *AccountRouter) Registe(am *AccountManager) {
 	ar.dao = am.DAO
 	api := am.API
-	prefix := api.Party(fmt.Sprintf("%s%s", PERFIX, ar.R))
+	prefix := api.Party(ar.R)
 	{
 		prefix.Post("/signin", ar.SignIn)
 	}

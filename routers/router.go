@@ -1,6 +1,8 @@
 package routers
 
 import (
+	"fmt"
+
 	"github.com/flourish-ship/work-account/conf"
 	"github.com/flourish-ship/work-account/idao"
 	"github.com/iris-contrib/middleware/logger"
@@ -54,8 +56,8 @@ func initReils(c *conf.APIConfig) *redis.Database {
 func (am *AccountManager) initialize() {
 	am.API.UseSessionDB(am.Redis)
 	am.API.Use(logger.New(iris.Logger))
-	am.API.StaticWeb("/docs", "./swagger/", 1)
-	am.rigiste(&AccountRouter{R: "/account"})
+	//am.API.StaticWeb("/docs", "./swagger/", 1)
+	am.rigiste(&AccountRouter{R: fmt.Sprintf("%s%s", PERFIX, "/account")})
 }
 
 func (am *AccountManager) rigiste(registers ...Register) {

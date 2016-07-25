@@ -13,6 +13,7 @@ const (
 	_ errorType = iota
 	//RequestParamError ...
 	RequestParamError
+	NotFoundError
 )
 
 func (ey errorType) ErrReap() *Resp {
