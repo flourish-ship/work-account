@@ -9,7 +9,7 @@ package main
 
 import (
 	"github.com/flourish-ship/work-account/conf"
-	"github.com/flourish-ship/work-account/daomongo"
+	"github.com/flourish-ship/work-account/db"
 	"github.com/flourish-ship/work-account/routers"
 )
 
@@ -31,8 +31,8 @@ func getConf(path string) *conf.Config {
 	return c
 }
 
-func getDAOMongo(c *conf.DBConfig) *daomongo.DAOMongo {
-	dao, err := daomongo.NewDAOMongo(c)
+func getDAOMongo(c *conf.DBConfig) *db.DAOMongo {
+	dao, err := db.NewDAOMongo(c)
 	if err != nil {
 		panic(err.Error())
 	}

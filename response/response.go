@@ -15,6 +15,7 @@ const (
 	RequestParamError
 	NotFound
 	ValidationError
+	TokenError
 )
 
 func (rc resultCode) ErrReap() *Resp {
@@ -22,6 +23,8 @@ func (rc resultCode) ErrReap() *Resp {
 	switch rc {
 	case RequestParamError:
 		r.Message = "Request param error,please confirm and re submit!"
+	case TokenError:
+		r.Message = "Error occurred when get/set token!"
 	default:
 		r.Message = "Unknown error,sorry!"
 	}

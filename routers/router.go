@@ -2,9 +2,10 @@ package routers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/flourish-ship/work-account/conf"
-	"github.com/flourish-ship/work-account/idao"
+	"github.com/flourish-ship/work-account/db"
 	"github.com/iris-contrib/middleware/logger"
 	"github.com/iris-contrib/sessiondb/redis"
 	"github.com/iris-contrib/sessiondb/redis/service"
@@ -14,6 +15,8 @@ import (
 const (
 	// PERFIX ...
 	PERFIX = "/am/v1"
+	// TOKENEXPIRE ...
+	TOKENEXPIRE = time.Hour * 24 * 7
 )
 
 // AccountManager ...
@@ -21,7 +24,7 @@ type AccountManager struct {
 	config *conf.APIConfig
 	Redis  *redis.Database
 	API    *iris.Framework
-	DAO    idao.IDAO
+	DAO    *db.DAOMongo
 }
 
 // Register ...
@@ -30,16 +33,16 @@ type Register interface {
 }
 
 // NewAccountManager ...
-func NewAccountManager(daoImpl idao.IDAO, c *conf.APIConfig) *AccountManager {
+func NewAccountManager(dao *db.DAOMongo, c *conf.APIConfig) *AccountManager {
 	return &AccountManager{
 		config: c,
-		Redis:  initReils(c),
+		Redis:  initRedis(c),
 		API:    iris.New(),
-		DAO:    daoImpl,
+		DAO:    dao,
 	}
 }
 
-func initReils(c *conf.APIConfig) *redis.Database {
+func initRedis(c *conf.APIConfig) *redis.Database {
 	return redis.New(service.Config{
 		Network:       service.DefaultRedisNetwork,
 		Addr:          c.Redis.Addr,

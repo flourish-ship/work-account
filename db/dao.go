@@ -1,4 +1,4 @@
-package daomongo
+package db
 
 import (
 	"time"
@@ -12,6 +12,19 @@ type DAOMongo struct {
 	Session *mgo.Session
 	db      *mgo.Database
 }
+
+type Result struct {
+	Status
+	Data interface{}
+}
+
+type Status int
+
+const (
+	Succuess Status = iota
+	NotFound
+	ValidationError
+)
 
 // NewDAOMongo ...
 func NewDAOMongo(c *conf.DBConfig) (*DAOMongo, error) {
