@@ -1,24 +1,25 @@
 package response
 
-type errorType int
+type resultCode int
 
 // Resp ...
 type Resp struct {
-	Code    int         `json:"code"`
+	Code    resultCode  `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
 }
 
 const (
-	_ errorType = iota
+	Succuess resultCode = iota
 	//RequestParamError ...
 	RequestParamError
-	NotFoundError
+	NotFound
+	ValidationError
 )
 
-func (ey errorType) ErrReap() *Resp {
-	r := &Resp{Code: int(ey)}
-	switch ey {
+func (rc resultCode) ErrReap() *Resp {
+	r := &Resp{Code: rc}
+	switch rc {
 	case RequestParamError:
 		r.Message = "Request param error,please confirm and re submit!"
 	default:

@@ -1,22 +1,21 @@
 package daomongo
 
 import (
+	"github.com/flourish-ship/work-account/idao"
 	"github.com/flourish-ship/work-account/models"
-	"github.com/flourish-ship/work-account/response"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
 // SignIn ...
-func (dao *DAOMongo) SignIn(username, password string) *response.Resp {
+func (dao *DAOMongo) SignIn(username, password string) idao.Result {
 	user := models.User{}
-	resp := &response.Resp{}
 	dao.db.C("users").Find(bson.M{"username": username}).One(&user)
 	if user.Id == "" {
-		resp.Code = int(response.NotFoundError)
-		resp.Message = "Can't find this user!"
-		return resp
+		return idao.Result{Status: idao.NotFound, Data: nil}
 	}
-	if bcrypt.CompareHashAndPassword(password, []byte(pass)) != nil {
-		return &models.ResponseExt{Code: "01", Message: "密码错误,登陆失败!"}
+	if bcrypt.CompareHashAndPassword(user.Password, []byte(password)) != nil {
+		return idao.Result{Status: idao.ValidationError, Data: nil}
 	}
+	return idao.Result{Status: idao.Succuess, Data: nil}
 }

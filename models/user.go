@@ -9,5 +9,5 @@ type User struct {
 	NickName   string        `json:"nickName"`   //外号
 	PinYin     string        `json:"pinyin"`     //简拼
 	FullPinYin string        `json:"fullPinYin"` //全拼
-	Password   string        `json:"passWord"`
+	Password   []byte        `json:"password"`
 }

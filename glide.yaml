@@ -10,3 +10,4 @@ import:
 - package: github.com/kataras/iris
 - package: gopkg.in/mgo.v2
 - package: golang.org/x/crypto
+- package: github.com/nu7hatch/gouuid

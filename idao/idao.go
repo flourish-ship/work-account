@@ -1,7 +1,5 @@
 package idao
 
-import "github.com/flourish-ship/work-account/response"
-
 // IDAO ...
 type IDAO interface {
 	IAccount
@@ -9,5 +7,18 @@ type IDAO interface {
 
 // IAccount ...
 type IAccount interface {
-	SignIn(username, password string) *response.Resp
+	SignIn(username, password string) Result
 }
+
+type Result struct {
+	Status
+	Data interface{}
+}
+
+type Status int
+
+const (
+	Succuess Status = iota
+	NotFound
+	ValidationError
+)
