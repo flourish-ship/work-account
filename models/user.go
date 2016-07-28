@@ -3,11 +3,11 @@ package models
 import "gopkg.in/mgo.v2/bson"
 
 type User struct {
-	Id         bson.ObjectId `json:"id"`
-	UserName   string        `json:"userName"`   //姓名
-	Gender     string        `json:"gender"`     //性别
-	NickName   string        `json:"nickName"`   //外号
-	PinYin     string        `json:"pinyin"`     //简拼
-	FullPinYin string        `json:"fullPinYin"` //全拼
-	Password   []byte        `json:"password"`
+	Id           bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Username     string        `bson:"username" json:"username"`
+	PasswordHash string        `bson:"password_hash" json:"-"`
+	Password     string        `bson:"-" json:"password"`
+	Gender       string        `bson:"gender,omitempty" json:"gender"`
+	NickName     string        `bson:"nick_name,omitempty" json:"nickName"`
+	PinYin       string        `json:"pinyin,omitempty" json:"pinyin"`
 }

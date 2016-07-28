@@ -7,18 +7,36 @@ import (
 )
 
 // SignIn ...
-func (dao *DAOMongo) SignIn(username, password string) Result {
+func (dao *DAOMongo) SignIn(param models.SignInParam) Result {
 	user := models.User{}
-	if username == "wendell" && password == "sunwen" {
+	if param.Username == "wendell" && param.Password == "sunwen" {
 		user.Id = bson.NewObjectId()
 		return Result{Status: Succuess, Data: user}
 	}
-	dao.db.C("users").Find(bson.M{"username": username}).One(&user)
+	dao.db.C("users").Find(bson.M{"username": param.Username}).One(&user)
 	if user.Id == "" {
 		return Result{Status: NotFound, Data: nil}
 	}
-	if bcrypt.CompareHashAndPassword(user.Password, []byte(password)) != nil {
+	if bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(param.Password)) != nil {
 		return Result{Status: ValidationError, Data: nil}
 	}
 	return Result{Status: Succuess, Data: user}
+}
+
+// SignUp ...
+func (dao *DAOMongo) SignUp(user models.User) Result {
+	user.Id = bson.NewObjectId()
+	hashPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return Result{Status: UnknownError, Data: nil}
+	}
+	user.PasswordHash = string(hashPass)
+	if err := dao.db.C("users").Insert(&user); err != nil {
+		return Result{Status: DBError, Data: nil}
+	}
+	return Result{Status: Succuess, Data: user}
+}
+
+func (dao *DAOMongo) CheckAccountExist(username string) {
+
 }

@@ -2,7 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/flourish-ship/work-account/conf"
 	"github.com/flourish-ship/work-account/db"
@@ -15,8 +14,6 @@ import (
 const (
 	// PERFIX ...
 	PERFIX = "/am/v1"
-	// TOKENEXPIRE ...
-	TOKENEXPIRE = time.Hour * 24 * 7
 )
 
 // AccountManager ...

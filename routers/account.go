@@ -1,17 +1,11 @@
 package routers
 
 import (
-	"encoding/json"
-	"fmt"
-	"strings"
-	"time"
-
 	"github.com/flourish-ship/work-account/auth/token"
 	"github.com/flourish-ship/work-account/db"
 	"github.com/flourish-ship/work-account/models"
 	"github.com/flourish-ship/work-account/response"
 	"github.com/kataras/iris"
-	uuid "github.com/nu7hatch/gouuid"
 )
 
 // AccountRouter ...
@@ -28,6 +22,11 @@ func (ar *AccountRouter) Registe(am *AccountManager) {
 	prefix := api.Party(ar.R)
 	{
 		prefix.Post("/signin", ar.SignIn)
+		prefix.Post("/signup", ar.SignUp)
+		security := prefix.Party("/security", TokenAuthMiddleware)
+		{
+			security.Get("/logout", ar.SignOut)
+		}
 	}
 }
 
@@ -39,8 +38,8 @@ func (ar *AccountRouter) SignIn(c *iris.Context) {
 		c.JSON(iris.StatusOK, response.RequestParamError.ErrReap())
 		return
 	}
-
-	result := ar.dao.SignIn(param.Username, param.Password)
+	// TODO data validate
+	result := ar.dao.SignIn(param)
 	if result.Status == db.NotFound {
 		c.JSON(iris.StatusOK, &response.Resp{
 			Code:    response.NotFound,
@@ -56,8 +55,8 @@ func (ar *AccountRouter) SignIn(c *iris.Context) {
 		return
 	}
 	user := result.Data.(models.User)
-	tokenKey, err := generateAndSaveToken(c, user.Id.Hex())
-	if err != nil {
+	tokenKey := token.GenerateAndSaveToken(c, user.Id.Hex())
+	if tokenKey == "" {
 		c.JSON(iris.StatusOK, response.TokenError.ErrReap())
 		return
 	}
@@ -69,28 +68,22 @@ func (ar *AccountRouter) SignIn(c *iris.Context) {
 
 }
 
-func generateAndSaveToken(c *iris.Context, userID string) (string, error) {
-	u, err := uuid.NewV4()
-	if err != nil {
-		return "", err
-	}
-	//uuid as token's key
-	now := time.Now()
-	tokenKey := strings.Replace(u.String(), "-", "", -1)
-	token := token.Token{
-		Key:         tokenKey,
-		UserID:      userID,
-		LastLoginAt: now.Unix(),
-		ExpireAt:    now.Add(TOKENEXPIRE).Unix(),
-	}
-	tokenInfo, err := json.Marshal(&token)
-	if err != nil {
-		fmt.Println("error", err.Error())
-	}
-	fmt.Println("tokenKey", tokenKey)
-	fmt.Println("tokenInfo", string(tokenInfo))
-	fmt.Println("userID", userID)
-	c.Session().Set(tokenKey, tokenInfo)
-	c.Session().Set(userID, tokenKey)
-	return tokenKey, nil
+// SignOut ...
+func (ar *AccountRouter) SignOut(c *iris.Context) {
+	token := c.Get("token").(token.Token)
+	c.Session().Delete(token.Key)
+	c.Session().Delete(token.UserID)
+	c.JSON(iris.StatusOK, &response.Resp{
+		Code:    response.Succuess,
+		Message: "Logout succuess",
+	})
+}
+
+// SignUp ...
+func (ar *AccountRouter) SignUp(c *iris.Context) {
+	user := models.User{}
+	c.ReadJSON(&user)
+	// TODO data validate
+	result := ar.dao.SignUp(user)
+
 }

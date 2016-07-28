@@ -24,6 +24,8 @@ const (
 	Succuess Status = iota
 	NotFound
 	ValidationError
+	DBError
+	UnknownError
 )
 
 // NewDAOMongo ...
